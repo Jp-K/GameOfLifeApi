@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conway's Game of Life</title>
+    <style>
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(50, 10px);
+        }
+        .cell {
+            width: 10px;
+            height: 10px;
+            border: 1px solid #ccc;
+        }
+        .alive {
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <div id="grid"></div>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="clear">Clear</button>
+    <script>
+        const baseApiUrl = "http://localhost:5023"
+        const grid = document.getElementById('grid');
+        const rows = 50;
+        const cols = 50;
+        let cells = [];
+        let isRunning = false;
+        let intervalId;
+        let baseUuid = "demo2";
+        let currentIteration = 0;
+
+        function createGrid() {
+            for (let i = 0; i < rows; i++) {
+                cells[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.addEventListener('click', () => toggleCell(i, j));
+                    grid.appendChild(cell);
+                    cells[i][j] = { element: cell, alive: false };
+                }
+            }
+        }
+
+        function toggleCell(i, j) {
+            cells[i][j].alive = !cells[i][j].alive;
+            cells[i][j].element.classList.toggle('alive');
+
+            const data = [
+                {
+                    "id": 0,
+                    "iteration": currentIteration+1,
+                    "uuid": baseUuid,
+                    "x": i,
+                    "y": j,
+                    "isAlive": true
+                }
+            ];
+
+            fetch(`${baseApiUrl}/api/Game/initialize`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            }).then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateGrid() {
+
+            fetch(`${baseApiUrl}/api/Game/${currentIteration+1}/${baseUuid}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/plain',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.length == 0) {
+                    stop();
+                    return;
+                }
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        cells[i][j].alive = false;
+                        cells[i][j].element.classList.toggle('alive', cells[i][j].alive);
+                    }
+                }
+                data.forEach(item => {
+                    cells[item.x][item.y].alive = item.isAlive;
+                    cells[item.x][item.y].element.classList.toggle('alive', cells[item.x][item.y].alive);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+            currentIteration = currentIteration + 1;
+        }
+
+        function start() {
+            if (!isRunning) {
+                isRunning = true;
+                intervalId = setInterval(updateGrid, 500);
+            }
+        }
+
+        function stop() {
+            if (isRunning) {
+                isRunning = false;
+                clearInterval(intervalId);
+            }
+        }
+
+        function clear() {
+            stop();
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    cells[i][j].alive = false;
+                    cells[i][j].element.classList.remove('alive');
+                }
+            }
+        }
+
+        createGrid();
+        document.getElementById('start').addEventListener('click', start);
+        document.getElementById('stop').addEventListener('click', stop);
+        document.getElementById('clear').addEventListener('click', clear);
+    </script>
+</body>
+</html>

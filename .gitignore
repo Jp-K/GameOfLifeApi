@@ -1,0 +1,98 @@
+# Compiled binary and object files
+bin/
+obj/
+
+# NuGet packages
+*.nupkg
+packages/
+# NuGet v3's project.json files produces more ignorable files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Build results
+*.dll
+*.exe
+*.app
+*.msi
+*.appx
+*.apk
+*.so
+*.dylib
+*.a
+*.lib
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Azure Pipelines
+*.overrides
+.vsts-ci.yml
+.azure-pipelines.yml
+
+# Auto generated files (Backup files and such)
+*.log
+*.pid
+*.sublime-*
+*.class
+
+# Visual Studio 2019/2022 (uncomment if you have too many projects)
+.vscode/
+.vs/
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/*.code-workspace
+.vscode-test/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.sln.userprefs
+*.xuser
+.idea/
+*.iml
+
+# Rider files
+.idea/
+.idea/*.iml
+.idea/modules.xml
+.idea/*.iws
+
+# Windows image file caches
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# NPM package files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript compile output
+*.tsbuildinfo
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Entity Framework Core migration files
+Migrations/
+
+# Secret files
+secrets.json
+
+# DotNet 6
+*.log
